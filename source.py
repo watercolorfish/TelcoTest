@@ -1,5 +1,5 @@
 #import sqlite3
-#import os
+import os
 import paramiko
 
 if __name__ == "__main__":
@@ -20,19 +20,21 @@ if __name__ == "__main__":
         if (str.startswith('sftp_password')):
             password = (str.split('='))[1].split('\n')[0]
         if (str.startswith('sftp_remote_dir')):
-            remote_dir = (str.split('='))[1].split('\n')[0]
+            directory = (str.split('='))[1].split('\n')[0]
         if (str.startswith('local_dir')):
             local_dir = (str.split('='))[1].split('\n')[0]
+
+    files = os.listdir(directory)
 
     transport = paramiko.Transport((host, port))
     transport.connect(username=user, password=password)
     sftp = paramiko.SFTPClient.from_transport(transport)
 
-    remotepath = '/path/to/remote/file.py'
-    localpath = '/path/to/local/file.py'
+    for remote_dir in files:
+        remotepath = remote_dir
 
-    sftp.get(remotepath, localpath)
-    sftp.put(localpath, remotepath)
+        sftp.get(remotepath, local_dir)
+        sftp.put(local_dir, remotepath)
 
     sftp.close()
     transport.close()
