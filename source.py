@@ -1,11 +1,12 @@
 import datetime
 import sqlite3
-#port MySQLdb
+#import MySQLdb
+import mysql.connector
 import os
 import paramiko
 
 if __name__ == "__main__":
-    a = input("Путь к файлу: ")
+    a = input()
     file = open(a, 'r')
     for line in file:
         if (line.startswith('sftp_host')):
@@ -31,7 +32,7 @@ if __name__ == "__main__":
 
     files = os.listdir(directory)
 
-    conn = MySQLdb.connect(user=sql_user, passwd=sql_password, db=sql_database)
+    conn = mysql.connect(user=sql_user, passwd=sql_password, db=sql_database)
     cursor = conn.cursor()
     cursor.execute("""CREATE TABLE IF NOT EXIST information
                       (date and time, name of file)
