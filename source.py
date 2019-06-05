@@ -1,15 +1,16 @@
 import datetime
 import mysql.connector
 import paramiko
+from sys import argv
 
 if __name__ == "__main__":
-    a = input()
-    file = open(a, 'r')
+    script, first = argv
+    file = open(first, 'r')
     for line in file:
         if (line.startswith('sftp_host')):
             host = (line.split('='))[1].split('\n')[0]
         if (line.startswith('sftp_port')):
-            port = (line.split('='))[1].split('\n')[0]
+            port = int((line.split('='))[1].split('\n')[0])
         if (line.startswith('sftp_user')):
             user = (line.split('='))[1].split('\n')[0]
         if (line.startswith('sftp_password')):
@@ -34,8 +35,9 @@ if __name__ == "__main__":
                    """)
     conn.commit()
 
+    transport = None
     transport = paramiko.Transport((host, port))
-    transport.connect(username=user, password=password)
+    transport.connect(username=user, password=password, timeout=60)
     sftp = paramiko.SFTPClient.from_transport(transport)
 
     ftp = sftp.open_sftp()
@@ -46,6 +48,7 @@ if __name__ == "__main__":
         sftp.get(remote_dir, local_dir)
         now = datetime.datetime.now()
         now.strftime("%d-%m-%Y %H:%M")
+        print(now, " ", remote_dir)
         cursor.executemany("INSERT INTO information VALUES (?,?)", (now, remote_dir))
 
     sftp.close()
