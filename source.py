@@ -32,29 +32,31 @@ if __name__ == "__main__":
     cursor.execute("CREATE TABLE IF NOT EXISTS `information` (date_and_time DATETIME, name_of_file TEXT)")
     conn.commit()
 
-    transport = None
-    transport = paramiko.Transport((host, port))
-    transport.connect(username=user, password=password)
-    sftp = paramiko.SFTPClient.from_transport(transport)
+    #transport = None
+    #transport = paramiko.Transport((host, port))
+    #transport.connect(username=user, password=password)
+    #sftp = paramiko.SFTPClient.from_transport(transport)
 
-    ftp = sftp.open_sftp()
-    ftp.chdir(directory)
-    files = ftp.listdir()
+    #ftp = sftp.open_sftp()
+    #ftp.chdir(directory)
+    #files = ftp.listdir()
 
-    for remote_dir in files:
-        sftp.get(remote_dir, local_dir)
-        now = datetime.datetime.now()
-        now.strftime("%d-%m-%Y %H:%M")
-        print(now, " ", remote_dir)
-        cursor.executemany("INSERT INTO information VALUES (?,?)", (now, remote_dir))
+    #for remote_dir in files:
+    #    sftp.get(remote_dir, local_dir)
+    #    now = datetime.datetime.now()
+    #    now.strftime("%d-%m-%Y %H:%M")
+    #    print(now, " ", remote_dir)
+    #    cursor.executemany("INSERT INTO information VALUES (?,?)", (now, remote_dir))
 
-    sftp.close()
-    transport.close()
+    #sftp.close()
+    #transport.close()
 
-    cursor.execute("SELECT name of file, date and time FROM information")
+    cursor.executemany("INSERT INTO `information` VALUES (?,?)", ('2019-06-05 20:26', 's.txt'))
+    cursor.execute("SELECT `name of file`, `date and time` FROM info")
     row = cursor.fetchone()
     while row is not None:
-        print(row)
+        coll1, coll2 = row
+        print('{:>15}'.format(coll1), " ", coll2)
         row = cursor.fetchone()
     cursor.close()
     conn.close()
