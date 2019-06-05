@@ -25,19 +25,16 @@ if __name__ == "__main__":
             sql_password = (line.split('='))[1].split('\n')[0]
         if (line.startswith('sql_database')):
             sql_database = (line.split('='))[1].split('\n')[0]
-
     file.close()
 
-    conn = mysql.connect(user=sql_user, passwd=sql_password, db=sql_database)
+    conn = mysql.connector.connect(user=sql_user, passwd=sql_password, db=sql_database)
     cursor = conn.cursor()
-    cursor.execute("""CREATE TABLE IF NOT EXIST information
-                      (date and time, name of file)
-                   """)
+    cursor.execute("CREATE TABLE IF NOT EXISTS `information` (date_and_time DATETIME, name_of_file TEXT)")
     conn.commit()
 
     transport = None
     transport = paramiko.Transport((host, port))
-    transport.connect(username=user, password=password, timeout=60)
+    transport.connect(username=user, password=password)
     sftp = paramiko.SFTPClient.from_transport(transport)
 
     ftp = sftp.open_sftp()
@@ -59,6 +56,5 @@ if __name__ == "__main__":
     while row is not None:
         print(row)
         row = cursor.fetchone()
-
     cursor.close()
     conn.close()
