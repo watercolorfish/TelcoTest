@@ -2,7 +2,7 @@ import datetime
 import sqlite3
 #import MySQLdb
 import mysql.connector
-import os
+#import os
 import paramiko
 
 if __name__ == "__main__":
@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     file.close()
 
-    files = os.listdir(directory)
+    #files = os.listdir(directory)
 
     conn = mysql.connect(user=sql_user, passwd=sql_password, db=sql_database)
     cursor = conn.cursor()
@@ -38,9 +38,14 @@ if __name__ == "__main__":
                       (date and time, name of file)
                    """)
     conn.commit()
+
     transport = paramiko.Transport((host, port))
     transport.connect(username=user, password=password)
     sftp = paramiko.SFTPClient.from_transport(transport)
+
+    ftp = sftp.open_sftp()
+    ftp.chdir(directory)
+    files = ftp.listdir()
 
     for remote_dir in files:
         sftp.get(remote_dir, local_dir)
