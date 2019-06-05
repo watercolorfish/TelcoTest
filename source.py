@@ -1,8 +1,6 @@
 import datetime
-import sqlite3
 #import MySQLdb
 import mysql.connector
-#import os
 import paramiko
 
 if __name__ == "__main__":
@@ -30,8 +28,6 @@ if __name__ == "__main__":
 
     file.close()
 
-    #files = os.listdir(directory)
-
     conn = mysql.connect(user=sql_user, passwd=sql_password, db=sql_database)
     cursor = conn.cursor()
     cursor.execute("""CREATE TABLE IF NOT EXIST information
@@ -55,3 +51,12 @@ if __name__ == "__main__":
 
     sftp.close()
     transport.close()
+
+    cursor.execute("SELECT * FROM information")
+    row = cursor.fetchone()
+    while row is not None:
+        print(row)
+        row = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
