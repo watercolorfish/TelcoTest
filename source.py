@@ -1,5 +1,4 @@
 import datetime
-#import MySQLdb
 import mysql.connector
 import paramiko
 
@@ -47,12 +46,12 @@ if __name__ == "__main__":
         sftp.get(remote_dir, local_dir)
         now = datetime.datetime.now()
         now.strftime("%d-%m-%Y %H:%M")
-        cursor.executemany("INSERT INTO albums VALUES (?,?)", (now, remote_dir))
+        cursor.executemany("INSERT INTO information VALUES (?,?)", (now, remote_dir))
 
     sftp.close()
     transport.close()
 
-    cursor.execute("SELECT * FROM information")
+    cursor.execute("SELECT name of file, date and time FROM information")
     row = cursor.fetchone()
     while row is not None:
         print(row)
